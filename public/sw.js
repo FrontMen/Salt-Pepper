@@ -11,16 +11,6 @@ self.addEventListener('install', function(e) {
 });
 
 self.addEventListener('activate', function(e) {
-  // This event will be fired once when this version of the script is first registered for
-  // a given URL scope.
-  // It's an opportunity to clean up any stale data that might be left behind in self.caches
-  // by an older version of this script.
-  // e.waitUntil(promise) is also available here to delay activation until work has been performed,
-  // but note that waiting within the activate event will delay handling of any
-  // fetch or message events that are fired in the interim. When possible, do work during the install phase.
-  // It will NOT be fired each time the service worker is revived after being terminated.
-  // To perform an action when the service worker is revived, include that logic in the
-  // `onfetch` or `onmessage` event listeners.
   console.log('Activate event:', e);
 });
 
@@ -28,8 +18,6 @@ self.addEventListener('fetch', function(event) {
   console.log('Handling fetch event for', event.request.url);
 
   event.respondWith(
-    // caches.match() will look for a cache entry in all of the caches available to the service worker.
-    // It's an alternative to first opening a specific named cache and then matching on that.
     caches.match(event.request).then(function(response) {
       if (response) {
         console.log('Found response in cache:', response);
@@ -38,9 +26,6 @@ self.addEventListener('fetch', function(event) {
       }
 
       console.log('No response found in cache. About to fetch from network...');
-
-      // event.request will always have the proper mode set ('cors, 'no-cors', etc.) so we don't
-      // have to hardcode 'no-cors' like we do when fetch()ing in the install handler.
       return fetch(event.request).then(function(response) {
         console.log('Response from network is:', response);
 
@@ -55,4 +40,21 @@ self.addEventListener('fetch', function(event) {
       });
     })
   );
+});
+
+self.addEventListener('push', function(event) {  
+  console.log('Received a push message', event);
+
+  var title = 'Yay a message.';  
+  var body = 'We have received a push message.';  
+  var icon = '/images/icon-192x192.png';  
+  var tag = 'simple-push-demo-notification-tag';
+
+  event.waitUntil(  
+    self.registration.showNotification(title, {  
+      body: body,  
+      icon: icon,  
+      tag: tag  
+    })  
+  );  
 });
