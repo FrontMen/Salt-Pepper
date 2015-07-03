@@ -42,12 +42,11 @@ self.addEventListener('fetch', function(event) {
   );
 });
 
-self.addEventListener('push', function(event) {  
-  console.log('Received a push message', event);
-
-  var title = 'Yay a message.';  
-  var body = 'We have received a push message.';  
-  var icon = '/images/icon-192x192.png';  
+self.addEventListener('message', function(event) {
+  console.log('Received a push message', event.data);
+  var title = 'Message from ' + event.data.name;  
+  var body = event.data.message;  
+  var icon = '/images/FM-logo-192.png';
   var tag = 'simple-push-demo-notification-tag';
 
   event.waitUntil(  
@@ -57,4 +56,5 @@ self.addEventListener('push', function(event) {
       tag: tag  
     })  
   );  
+
 });

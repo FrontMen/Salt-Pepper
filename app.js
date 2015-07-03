@@ -16,6 +16,8 @@ io.sockets.on('connection', function (socket) {
   socket.emit('status', 'connected');
 
   socket.on('push', function (data) {
+    console.log("hoi");
+    console.log(data);
     io.sockets.emit('message', data);
   });
 });
