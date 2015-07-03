@@ -1,15 +1,24 @@
 var express = require('express');
+var socket_io = require('socket.io');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var push = require('./routes/push');
-var connections = require('./routes/connections');
-
 var app = express();
+
+// Sockets...
+var io = socket_io();
+app.io = io;
+
+io.sockets.on('connection', function (socket) {
+  socket.emit('status', 'connected');
+});
+
+var routes = require('./routes/index');
+var push = require('./routes/push')(io);
+var connections = require('./routes/connections')(io);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
