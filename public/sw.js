@@ -1,11 +1,10 @@
 self.addEventListener('install', function(e) {
-  event.waitUntil(
+  e.waitUntil(
     caches.open('v1').then(function(cache) {
       return cache.addAll([
-        '/js/',
-        '/stylesheets/',
         '/stylesheets/style.css',
-        '/js/main.js'
+        '/js/main.js',
+        '/'
       ]);
     })
   );
