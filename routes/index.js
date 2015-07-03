@@ -5,7 +5,7 @@ var io = require('socket.io')();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'Frontmen Push Notifications' });
 });
 
 module.exports = router;
