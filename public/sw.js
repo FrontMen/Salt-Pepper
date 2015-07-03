@@ -30,9 +30,6 @@ self.addEventListener('fetch', function(event) {
 
         return response;
       }).catch(function(error) {
-        // This catch() will handle exceptions thrown from the fetch() operation.
-        // Note that a HTTP error response (e.g. 404) will NOT trigger an exception.
-        // It will return a normal response object that has the appropriate error code set.
         console.error('Fetching failed:', error);
 
         throw error;
@@ -53,4 +50,25 @@ self.addEventListener('message', function(event) {
     tag: tag  
   }); 
 
+});
+
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+
+  event.waitUntil(
+    clients.matchAll({  
+      type: "window"  
+    })
+    .then(function(clientList) {
+      debugger;
+      for (var i = 0; i < clientList.length; i++) {  
+        var client = clientList[i];
+        if (client.url == '/' && 'focus' in client)  
+          return client.focus();  
+      }  
+      if (clients.openWindow) {
+        return clients.openWindow('/');  
+      }
+    })
+  );
 });
