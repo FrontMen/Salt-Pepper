@@ -4,7 +4,8 @@ self.addEventListener('install', function(e) {
       return cache.addAll([
         '/stylesheets/style.css',
         '/js/main.js',
-        '/'
+        '/',
+        'images/FM-logo-192.png'
       ]);
     })
   );
@@ -15,8 +16,6 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(event) {
-  console.log('Handling fetch event for', event.request.url);
-
   event.respondWith(
     caches.match(event.request).then(function(response) {
       if (response) {
@@ -43,18 +42,15 @@ self.addEventListener('fetch', function(event) {
 });
 
 self.addEventListener('message', function(event) {
-  console.log('Received a push message', event.data);
   var title = 'Message from ' + event.data.name;  
   var body = event.data.message;  
   var icon = '/images/FM-logo-192.png';
   var tag = 'simple-push-demo-notification-tag';
 
-  event.waitUntil(  
-    self.registration.showNotification(title, {  
-      body: body,  
-      icon: icon,  
-      tag: tag  
-    })  
-  );  
+  self.registration.showNotification(title, {  
+    body: body,  
+    icon: icon,  
+    tag: tag  
+  }); 
 
 });

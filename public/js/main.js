@@ -8,22 +8,16 @@ function initialiseState(registration) {
 	if (!('showNotification' in ServiceWorkerRegistration.prototype)) {  
 	    console.warn('Notifications aren\'t supported.');  
 	    return;  
-	} else {
-		console.log('Notifications are supported.');
 	}
 
 	if (Notification.permission === 'denied') {  
 	    console.warn('The user has blocked notifications.');  
 	    return;  
-	} else {
-	    console.log('The user has allowed notifications.');  
 	}
 
 	if (!('PushManager' in window)) {  
 	    console.warn('Push messaging isn\'t supported.');  
 	    return;  
-	} else {
-	    console.log('Push messaging is supported');  
 	}
 
 	navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
