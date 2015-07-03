@@ -1,9 +1,8 @@
 window.serverConnection = io.connect('http://localhost:3000');
 
 window.serverConnection.on('message', function (data) {
-	console.log("Received:", data);
+	navigator.serviceWorker.controller.postMessage(data);
 });
-var API_KEY = "IzaSyC-Bqq9iHjKRKUwu2jqpbY0wGI8dPvCJV4";
 
 function initialiseState(registration) {
 	if (!('showNotification' in ServiceWorkerRegistration.prototype)) {  
@@ -31,17 +30,13 @@ function initialiseState(registration) {
 		serviceWorkerRegistration.pushManager.getSubscription()  
       		.then(function(subscription) {
 		        var pushButton = document.querySelector('.js-push-button'); 
-  				var messageSpan = document.querySelector('#message'); 
+  				var messageSpan = document.querySelector('#enabled'); 
 		        pushButton.disabled = false;
 
-		        if (!subscription) {  
-		          // We aren't subscribed to push, so set UI  
-		          // to allow the user to enable push  
+		        if (!subscription) { 
 		          return;  
 		        }
 
-		        // Set your UI to show they have subscribed for  
-		        // push messages  
 		        messageSpan.textContent = 'Disable Push Messages';  
 		        isPushEnabled = true;  
 	      	})  
@@ -53,7 +48,7 @@ function initialiseState(registration) {
 
 function subscribe() {
   var pushButton = document.querySelector('.js-push-button');
-  var messageSpan = document.querySelector('#message');
+  var messageSpan = document.querySelector('#enabled');
   pushButton.disabled = true;
 
   navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
@@ -82,7 +77,7 @@ function subscribe() {
 
 function unsubscribe() {  
   	var pushButton = document.querySelector('.js-push-button');  
-  	var messageSpan = document.querySelector('#message');
+  	var messageSpan = document.querySelector('#enabled');
   	pushButton.disabled = true;
 
   	navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
@@ -94,7 +89,7 @@ function unsubscribe() {
 		          isPushEnabled = false;  
 		          pushButton.disabled = false;  
 		          messageSpan.textContent = 'Enable Push Messages';  
-		          return;  
+		          return;
 		        }  
 
 		        // TODO: Make a request to your server to remove
@@ -106,12 +101,7 @@ function unsubscribe() {
 		          pushButton.disabled = false;  
 		          messageSpan.textContent = 'Enable Push Messages';  
 		          isPushEnabled = false;  
-		        }).catch(function(e) {  
-		          // We failed to unsubscribe, this can lead to  
-		          // an unusual state, so may be best to remove   
-		          // the users data from your data store and   
-		          // inform the user that you have done so
-
+		        }).catch(function(e) {
 		          console.log('Unsubscription error: ', e);  
 		          pushButton.disabled = false;
 		          messageSpan.textContent = 'Enable Push Messages'; 
@@ -134,6 +124,23 @@ window.addEventListener('load', function() {
 	    	subscribe(); 
 		} 
      })
+
+   	var sendButton = document.getElementById('send-trigger');
+   	sendButton.addEventListener('click', function() {
+   		var message = document.getElementById('message-to-send').value;
+   		console.log(message)
+   		fetch('/push', {
+		  method: 'post',
+		  headers: {
+		    'Accept': 'application/x-www-form-urlencoded',
+		    'Content-Type': 'pplication/x-www-form-urlencoded'
+		  },
+		  body: JSON.stringify({
+		    name: 'Jaco',
+		    message: message,
+		  })
+		})
+   	});
 });
 
 if ('serviceWorker' in navigator) {
