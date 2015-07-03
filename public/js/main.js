@@ -1,4 +1,4 @@
-window.serverConnection = io.connect('http://localhost:3000');
+window.serverConnection = io.connect(3000);
 
 window.serverConnection.on('message', function (data) {
 	console.log("Received:", data);

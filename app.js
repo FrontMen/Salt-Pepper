@@ -14,6 +14,10 @@ app.io = io;
 
 io.sockets.on('connection', function (socket) {
   socket.emit('status', 'connected');
+
+  socket.on('push', function (data) {
+    io.sockets.emit('message', data);
+  });
 });
 
 var routes = require('./routes/index');
